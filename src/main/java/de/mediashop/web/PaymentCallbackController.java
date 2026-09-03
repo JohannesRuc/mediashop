@@ -5,6 +5,7 @@ import de.mediashop.repo.OrderRepository;
 import de.mediashop.service.PaymentClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -32,5 +33,15 @@ public class PaymentCallbackController {
             orders.markPaid(callback.orderId(), callback.amount());
         }
         return Map.of("orderId", callback.orderId(), "details", details);
+    }
+
+    /**
+     * Support-Werkzeug: Transaktionsdetails erneut abholen, wenn der erste
+     * Callback unvollstaendig war.
+     */
+    @PostMapping("/internal/payments/refetch")
+    public Map<String, Object> refetch(@RequestParam("orderId") String orderId,
+                                       @RequestParam("detailsUrl") String detailsUrl) {
+        return Map.of("orderId", orderId, "details", paymentClient.fetchDetails(detailsUrl));
     }
 }
