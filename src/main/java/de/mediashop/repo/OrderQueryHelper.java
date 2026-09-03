@@ -5,19 +5,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Bestelluebersicht des angemeldeten Kunden.
  *
- * ORDER BY laesst sich nicht als Prepared-Statement-Parameter binden, deshalb wird
- * die Sortierspalte gegen eine feste Allowlist geprueft und faellt sonst auf den
- * Default zurueck.
+ * ORDER BY laesst sich nicht als Prepared-Statement-Parameter binden. Die
+ * Sortierspalte wird deshalb bereits am Controller per Bean Validation
+ * (@Pattern) auf die erlaubten Spaltennamen eingeschraenkt.
  */
 @Component
 public class OrderQueryHelper {
 
-    private static final Set<String> SORTABLE_COLUMNS = Set.of("created_at", "total_amount", "status");
     private static final String DEFAULT_COLUMN = "created_at";
 
     private final NamedParameterJdbcTemplate jdbc;
@@ -26,21 +24,13 @@ public class OrderQueryHelper {
         this.jdbc = jdbc;
     }
 
-    public List<Map<String, Object>> findForCustomer(String customerId, String requestedSort) {
-        String column = allowedColumn(requestedSort);
+    public List<Map<String, Object>> findForCustomer(String customerId, String sortColumn) {
+        String column = (sortColumn == null || sortColumn.isBlank()) ? DEFAULT_COLUMN : sortColumn;
 
         String sql = "SELECT id, status, total_amount, created_at FROM orders"
                 + " WHERE customer_id = :customerId"
                 + " ORDER BY " + column + " DESC";
 
         return jdbc.queryForList(sql, Map.of("customerId", customerId));
-    }
-
-    private String allowedColumn(String requested) {
-        if (requested == null) {
-            return DEFAULT_COLUMN;
-        }
-        String normalized = requested.trim().toLowerCase();
-        return SORTABLE_COLUMNS.contains(normalized) ? normalized : DEFAULT_COLUMN;
     }
 }

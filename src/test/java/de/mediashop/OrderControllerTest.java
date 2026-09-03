@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +29,20 @@ class OrderControllerTest {
     void ordersRequireAuthentication() throws Exception {
         mockMvc.perform(get("/orders/ord-1"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void invalidSortColumnIsRejected() throws Exception {
+        mockMvc.perform(get("/orders?sort=created_at%3B+DROP+TABLE+orders+--")
+                        .with(jwt().jwt(token -> token.subject("cust-42"))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void allowedSortColumnIsAccepted() throws Exception {
+        mockMvc.perform(get("/orders?sort=total_amount")
+                        .with(jwt().jwt(token -> token.subject("cust-42"))))
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test

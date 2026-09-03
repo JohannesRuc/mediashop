@@ -3,8 +3,10 @@ package de.mediashop.web;
 import de.mediashop.model.CheckoutRequest;
 import de.mediashop.repo.OrderQueryHelper;
 import de.mediashop.repo.OrderRepository;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
+@Validated
 public class OrderController {
 
     private final OrderRepository orders;
@@ -34,8 +37,13 @@ public class OrderController {
     }
 
     @GetMapping
-    public List<Map<String, Object>> list(@AuthenticationPrincipal Jwt jwt,
-                                          @RequestParam(name = "sort", required = false) String sort) {
+    public List<Map<String, Object>> list(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(name = "sort", required = false)
+            @Pattern(regexp = "^(created_at|total_amount|status)$",
+                     message = "sort muss created_at, total_amount oder status sein")
+            String sort) {
+
         return queryHelper.findForCustomer(jwt.getSubject(), sort);
     }
 
