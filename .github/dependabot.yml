@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: monthly
+    # Nur Alerts, keine automatischen Pull Requests (Trainingsstand soll stabil bleiben)
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0

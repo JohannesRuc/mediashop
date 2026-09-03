@@ -1,0 +1,9 @@
+providers:
+  - name: default
+    baseUrl: https://api.payment-provider.example/v2
+    timeoutSeconds: 15
+    retries: 3
+  - name: fallback
+    baseUrl: https://api-eu.payment-provider.example/v2
+    timeoutSeconds: 30
+    retries: 1

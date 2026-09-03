@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: mediashop
+  datasource:
+    url: jdbc:postgresql://db.internal:5432/mediashop
+    username: mediashop
+    password: mediashop
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.internal/realms/mediashop
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,metrics,configprops
+
+mediashop:
+  invoice-dir: /var/mediashop/invoices
+  erp:
+    export-script: /opt/erp/bin/export.sh

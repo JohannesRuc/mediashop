@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:mediashop;MODE=PostgreSQL
+    username: sa
+    password: sa
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8081/realms/mediashop-test/protocol/openid-connect/certs

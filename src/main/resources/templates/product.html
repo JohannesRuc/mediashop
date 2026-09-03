@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="${product.name}">Produkt</title>
+</head>
+<body>
+<h1 th:text="${product.name}">Produktname</h1>
+
+<!-- Beschreibung wird im Backoffice als HTML gepflegt (Formatierung, Links) -->
+<div class="description" th:utext="${product.description}"></div>
+
+<p th:text="'Preis: ' + ${product.price} + ' EUR'">Preis</p>
+</body>
+</html>
