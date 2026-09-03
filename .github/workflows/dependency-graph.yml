@@ -1,0 +1,30 @@
+name: Dependency Graph
+
+# GitHubs Dependency Graph liest bei Maven nur die pom.xml und kennt damit
+# die vom Parent-BOM verwalteten Versionen nicht. Diese Action loest den
+# vollstaendigen Abhaengigkeitsbaum auf und meldet ihn an GitHub, damit
+# Dependabot auch transitive Abhaengigkeiten bewerten kann.
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '23 5 * * 1'
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - uses: advanced-security/maven-dependency-submission-action@v4
+        with:
+          settings-file: ''
