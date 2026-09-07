@@ -1,6 +1,7 @@
 providers:
   - name: default
     baseUrl: https://api.payment-provider.example/v2
+    apiKey: sk_live_51Qh8dK2mZvBxYlN7rT4pWsUvCeGfHjKb9aX0z6cRtEuD3nMwPqAoLiFbG5sHkT
     timeoutSeconds: 15
     retries: 3
   - name: fallback
