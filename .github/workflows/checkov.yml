@@ -1,0 +1,37 @@
+name: Checkov
+
+# Prueft Dockerfile, GitHub-Workflows und Secrets.
+# Bewusst nur manuell: Die Funde sollen den Alert-Bestand des Trainings nicht veraendern.
+# Im echten Projekt: zusaetzlich bei pull_request und push auf main.
+on:
+  workflow_dispatch:
+
+# Standard: nur lesen. Mehr Rechte bekommt nur der Job, der sie braucht.
+permissions:
+  contents: read
+
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # SARIF in Code scanning hochladen
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf # v12.1347.0
+        with:
+          directory: .
+          output_format: sarif
+          output_file_path: results.sarif
+          soft_fail: true   # erst sichtbar machen, spaeter als Quality Gate blockieren
+
+      - name: SARIF hochladen
+        if: always()
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: results.sarif
+          category: checkov

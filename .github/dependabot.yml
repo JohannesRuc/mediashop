@@ -12,3 +12,10 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 0
+
+  # Haelt die SHA-gepinnten Actions aktuell (Dependabot pflegt Hash und Versionskommentar)
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 0
