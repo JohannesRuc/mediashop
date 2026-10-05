@@ -30,7 +30,12 @@ docker run --rm -p 127.0.0.1:8080:8080 mediashop
 ```
 
 Danach z. B. `http://localhost:8080/catalog/products?q=Vinyl` oder `http://localhost:8080/catalog/products/p-1`.
-Bereiche mit Login (`/orders`, `/invoices`) antworten mit 401 – dafuer ist kein Identity Provider enthalten.
+Bereiche mit Login (`/orders`, `/invoices`) brauchen ein Demo-Token (bekommt ihr im Training) – statt Keycloak
+prueft der Demo-Betrieb Tokens gegen den oeffentlichen Schluessel in `demo/jwt-public.pem`:
+
+```bash
+curl -H "Authorization: Bearer <token>" http://localhost:8080/orders/ord-1
+```
 
 ## Endpoints (Auszug)
 
