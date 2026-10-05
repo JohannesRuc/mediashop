@@ -17,6 +17,21 @@ mvn spring-boot:run
 
 Tests laufen gegen eine In-Memory-H2 (`-Dspring.profiles.active=test`).
 
+## Demo mit Docker (Training)
+
+> **Absichtlich verwundbare Anwendung.** Nur lokal starten, nie ins Netz stellen.
+
+Das Image baut sich selbst (keine lokale Java- oder Maven-Installation noetig) und laeuft ohne PostgreSQL:
+H2 im Speicher mit den Testdaten.
+
+```bash
+docker build -t mediashop .
+docker run --rm -p 127.0.0.1:8080:8080 mediashop
+```
+
+Danach z. B. `http://localhost:8080/catalog/products?q=Vinyl` oder `http://localhost:8080/catalog/products/p-1`.
+Bereiche mit Login (`/orders`, `/invoices`) antworten mit 401 – dafuer ist kein Identity Provider enthalten.
+
 ## Endpoints (Auszug)
 
 | Methode | Pfad | Auth |
